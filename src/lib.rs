@@ -1,18 +1,18 @@
 #![doc(html_root_url = "https://docs.rs/serde-value/0.7.0/")]
 
-use std::hash::RandomState;
-
-// pub use std::collections::BTreeMap as Map;
-pub type Map<K, V, S = RandomState> = indexmap::IndexMap<K, V, S>;
-
 use ordered_float::OrderedFloat;
 use serde::Deserialize;
-use std::hash::{Hash, Hasher};
+use std::{
+    cmp::Ordering,
+    hash::{Hash, Hasher},
+};
 
 pub use de::*;
+pub use map::Map;
 pub use ser::*;
 
 mod de;
+pub mod map;
 mod ser;
 
 #[derive(Clone, Debug)]
@@ -101,7 +101,7 @@ impl PartialEq for Value {
     }
 }
 
-/*impl Ord for Value {
+impl Ord for Value {
     fn cmp(&self, rhs: &Self) -> Ordering {
         match (self, rhs) {
             (&Value::Bool(v0), &Value::Bool(ref v1)) => v0.cmp(v1),
@@ -121,12 +121,13 @@ impl PartialEq for Value {
             (&Value::Option(ref v0), &Value::Option(ref v1)) => v0.cmp(v1),
             (&Value::Newtype(ref v0), &Value::Newtype(ref v1)) => v0.cmp(v1),
             (&Value::Seq(ref v0), &Value::Seq(ref v1)) => v0.cmp(v1),
-            (&Value::Map(ref v0), &Value::Map(ref v1)) => v0.cmp(v1),
+            // (&Value::Map(ref v0), &Value::Map(ref v1)) => v0.cmp(v1),
+            (&Value::Map(_), &Value::Map(_)) => todo!(),
             (&Value::Bytes(ref v0), &Value::Bytes(ref v1)) => v0.cmp(v1),
             (v0, v1) => v0.discriminant().cmp(&v1.discriminant()),
         }
     }
-}*/
+}
 
 impl Value {
     fn discriminant(&self) -> usize {
@@ -183,11 +184,11 @@ impl Value {
 }
 
 impl Eq for Value {}
-/*impl PartialOrd for Value {
+impl PartialOrd for Value {
     fn partial_cmp(&self, rhs: &Self) -> Option<Ordering> {
         Some(self.cmp(rhs))
     }
-}*/
+}
 
 #[cfg(test)]
 use serde_derive::{Deserialize, Serialize};

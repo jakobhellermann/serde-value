@@ -11,10 +11,13 @@ readme = "README.md"
 keywords = ["serde"]
 license = "MIT"
 
+[features]
+preserve_order = ["dep:indexmap"]
+
 [dependencies]
 serde = "^1.0.0"
 ordered-float = "^2.0.0"
-indexmap = { version = "2.12.0", default-features = false, features = ["serde"] }
+indexmap = { version = "2.12", optional = true, default-features = false, features = ["serde"] }
 
 [dev-dependencies]
 serde_derive = "^1.0.0"

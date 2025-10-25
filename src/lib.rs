@@ -119,7 +119,7 @@ impl Ord for Value {
             (&Value::Seq(ref v0), &Value::Seq(ref v1)) => v0.cmp(v1),
             (&Value::Map(ref v0), &Value::Map(ref v1)) => v0.cmp(v1),
             (&Value::Bytes(ref v0), &Value::Bytes(ref v1)) => v0.cmp(v1),
-            (ref v0, ref v1) => v0.discriminant().cmp(&v1.discriminant()),
+            (v0, v1) => v0.discriminant().cmp(&v1.discriminant()),
         }
     }
 }
@@ -149,7 +149,7 @@ impl Value {
         }
     }
 
-    fn unexpected(&self) -> serde::de::Unexpected {
+    fn unexpected(&self) -> serde::de::Unexpected<'_> {
         match *self {
             Value::Bool(b) => serde::de::Unexpected::Bool(b),
             Value::U8(n) => serde::de::Unexpected::Unsigned(n as u64),

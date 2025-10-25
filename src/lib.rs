@@ -1,9 +1,12 @@
 #![doc(html_root_url = "https://docs.rs/serde-value/0.7.0/")]
 
+use std::hash::RandomState;
+
+// pub use std::collections::BTreeMap as Map;
+pub type Map<K, V, S = RandomState> = indexmap::IndexMap<K, V, S>;
+
 use ordered_float::OrderedFloat;
 use serde::Deserialize;
-use std::cmp::Ordering;
-use std::collections::BTreeMap;
 use std::hash::{Hash, Hasher};
 
 pub use de::*;
@@ -36,7 +39,7 @@ pub enum Value {
     Option(Option<Box<Value>>),
     Newtype(Box<Value>),
     Seq(Vec<Value>),
-    Map(BTreeMap<Value, Value>),
+    Map(Map<Value, Value>),
     Bytes(Vec<u8>),
 }
 
@@ -64,7 +67,8 @@ impl Hash for Value {
             Value::Option(ref v) => v.hash(hasher),
             Value::Newtype(ref v) => v.hash(hasher),
             Value::Seq(ref v) => v.hash(hasher),
-            Value::Map(ref v) => v.hash(hasher),
+            // Value::Map(ref v) => v.hash(hasher),
+            Value::Map(_) => todo!(),
             Value::Bytes(ref v) => v.hash(hasher),
         }
     }
@@ -97,7 +101,7 @@ impl PartialEq for Value {
     }
 }
 
-impl Ord for Value {
+/*impl Ord for Value {
     fn cmp(&self, rhs: &Self) -> Ordering {
         match (self, rhs) {
             (&Value::Bool(v0), &Value::Bool(ref v1)) => v0.cmp(v1),
@@ -122,7 +126,7 @@ impl Ord for Value {
             (v0, v1) => v0.discriminant().cmp(&v1.discriminant()),
         }
     }
-}
+}*/
 
 impl Value {
     fn discriminant(&self) -> usize {
@@ -179,11 +183,11 @@ impl Value {
 }
 
 impl Eq for Value {}
-impl PartialOrd for Value {
+/*impl PartialOrd for Value {
     fn partial_cmp(&self, rhs: &Self) -> Option<Ordering> {
         Some(self.cmp(rhs))
     }
-}
+}*/
 
 #[cfg(test)]
 use serde_derive::{Deserialize, Serialize};

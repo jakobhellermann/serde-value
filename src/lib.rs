@@ -67,8 +67,7 @@ impl Hash for Value {
             Value::Option(ref v) => v.hash(hasher),
             Value::Newtype(ref v) => v.hash(hasher),
             Value::Seq(ref v) => v.hash(hasher),
-            // Value::Map(ref v) => v.hash(hasher),
-            Value::Map(_) => todo!(),
+            Value::Map(ref v) => v.hash(hasher),
             Value::Bytes(ref v) => v.hash(hasher),
         }
     }
